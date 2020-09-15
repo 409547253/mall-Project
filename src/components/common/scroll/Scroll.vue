@@ -46,27 +46,35 @@
       /* 1.获取的是上面data中的scroll的值,将其赋值为BScroll */
       this.scroll = new BScroll(this.$refs.wrapper,{
 
-          click:true,
-          probeType:this.probeType,
-          pullUpLoad:this.pullUpLoad
-
-      })
-      
-      /* 2.监听滚动的位置 */
-      this.scroll.on('scroll',(position) =>{
-
-        this.$emit('scroll',position)
+              click:true,
+              probeType:this.probeType,
+              pullUpLoad:this.pullUpLoad
 
       })
 
-      /* 3.监听上拉加载事件 */
-      this.scroll.on('pullingUp',() => {
+      /* 如果probeType的值为2或者3才可以监听滚动事件 */
+      if (this.probeType === 2 || this.probeType === 3) {
+          
+          /* 2.监听滚动的位置 */
+          this.scroll.on('scroll',(position) =>{
 
+            this.$emit('scroll',position)
 
-         this.$emit('pullingUp')
+          })
 
+      }
 
-      })
+      //3.监听scroll滚动到底部
+      if (this.pullUpLoad) {
+
+        this.scroll.on('pullingUp', () => {
+
+          this.$emit('pullingUp')
+
+        })
+  
+      }
+
 
 
     },
@@ -74,48 +82,20 @@
     
       scrollTo(x,y,time=300){
         /* 获得scroll(better-scroll) */
-        this.scroll.scrollTo(x,y,time)
-
+        this.scroll && this.scroll.scrollTo(x,y,time)
       },
       finishPullUp(){
-
-        this.scroll.finishPullUp()
-
+        this.scroll && this.scroll.finishPullUp()
+      },
+      refresh(){
+        /* 先去判断有没有值，有值再去进行刷新 */
+        this.scroll && this.scroll.refresh()
+      },
+      getScrollY(){
+        return this.scroll ? this.scroll.y : 0
       }
 
-      /* _initScroll() {
-        // 1.创建BetterScroll
-        this.scroll = new BScroll(this.$refs.wrapper, {
-          probeType: this.probeType,
-          click: this.click,
-          pullUpLoad: this.pullUpLoad
-        })
 
-        // 2.事件滚动
-        if (this.probeType === 2 || this.probeType === 3) {
-          this.scroll.on('scroll', position => {
-            // console.log(position);
-            this.$emit('scroll', position)
-          })
-        }
-
-        // 3.上拉加载
-        if (this.pullUpLo ad) {
-          this.scroll.on('pullingUp', () => {
-            // console.log('上拉加载更多');
-            this.$emit('pullingUp')
-          })
-        }
-      },
-      refresh() {
-        this.scroll && this.scroll.refresh && this.scroll.refresh()
-      },
-      finishedPullUp() {
-        this.scroll && this.scroll.finishPullUp && this.scroll.finishPullUp()
-      },
-      scrollTo(x, y, time=100) {
-        this.scroll && this.scroll.scrollTo && this.scroll.scrollTo(x, y, time)
-      } */
     },
     watch: {
       /* data() {

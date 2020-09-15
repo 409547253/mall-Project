@@ -2,7 +2,7 @@
     <swiper>
       <swiper-item v-for="item in banners">
           <a :href="item.link">
-            <img :src="item.image" alt="">
+            <img :src="item.image" alt="" @load="imageLoad">
           </a>
       </swiper-item>
   </swiper>
@@ -13,6 +13,7 @@
 
   export default {
     name: "HomeSwiper",
+
     /* 获取父组件传入的banners数据 */
     props: {
       banners: {
@@ -35,13 +36,16 @@
       },
       stopTimer() {
         this.$refs.swiper && this.$refs.swiper.stopTimer()
-      },
-	    imageLoaded() {
+      },  
+
+	    imageLoad() {
+        /* 这个事件只会执行一次，当首页的第一张图片加载完毕后，就会返回总体高度的值 */
       	if (!this.isLoaded) {
-      		this.$emit('swiperLoaded')
+      		this.$emit('swiperImageLoad')
           this.isLoaded = true
         }
-	    }
+      },
+      
     }
   }
 </script>
