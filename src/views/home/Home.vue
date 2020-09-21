@@ -4,7 +4,7 @@
       <div slot="center">购物街</div>
     </nav-bar>
 
-     <tab-control 
+    <tab-control 
               :titles="['流行','新款','精选']" 
               @tabClick="tabClick"
               ref="tabControl1"
@@ -14,7 +14,7 @@
     <!-- 在scroll区域内是不可滚动的,且接收到子组件传入scroll事件以及position属性 -->
     <scroll class="content" 
             ref="scroll" 
-            :probe-type="3" 
+            :probe-type="2" 
             @scroll="contentScroll"
             :pull-up-load="true"
             @pullingUp="loadMore"
@@ -50,11 +50,11 @@
   import TabControl from 'components/content/tabControl/TabControl';
   import GoodList from 'components/content/goods/GoodsList';
   import Scroll from 'components/common/scroll/Scroll';
-  import BackTop from 'components/content/backTop/BackTop';
 
   /* 方法 */
   import { getHomeMultidata,getHomeGoods } from 'network/home';
   import {debounce} from 'common/utils';
+  import {itemListenerMinxin,backTopMixin} from 'common/mixin';
 
 
   export default {
@@ -67,10 +67,11 @@
       TabControl,
       GoodList,
       Scroll,
-      BackTop
     },
+    mixins:[itemListenerMinxin,backTopMixin],
     data() {
       return {
+        
           banners:[],
           recommends:[],
           goods:{
@@ -82,10 +83,10 @@
           },
           /* 默认当前类型是一个pop */
           currentType:'pop',
-          isShowBackTop:false,
           tabOffsetTop:0,
           isTabFixed:false,
-          saveY:0
+          saveY:0,
+
       }
     },
     /* 计算属性 */
@@ -95,15 +96,27 @@
         }
     },
     destroyed(){
+
       console.log('home destroyed')
+      
     },
     activated(){
+
+      console.log('activated')
+      console.log(this.saveY)
       this.$refs.scroll.scrollTo(0,this.saveY,0)  
       this.$refs.scroll.refresh()
+
     },
     deactivated(){
+      /* 保存Y值 */
       console.log('deactivated')
-      this.saveY = this.$refs.scroll.getScrollY()
+      this.saveY = this.$refs.scroll.scrollY
+      console.log(this.saveY)
+
+      /* 取消全局事件的监听 */
+      this.$bus.$off('itemImgLoad', this.itemImgListener)
+
     },
     /* 当组件创建完毕后发送请求 */
     created(){
@@ -114,15 +127,10 @@
       this.getHomeGoods('pop')
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
-    
+
     },
     mounted(){
-      /* 图片加载完的事件监听 */
-      const refresh = debounce(this.$refs.scroll.refresh,200)
-      //1.监听item图片中加载完成
-      this.$bus.$on('itemImageLoad',() => {
-          refresh()
-      })
+      
 
     },
     methods:{
@@ -155,11 +163,14 @@
 
       },
       contentScroll(position){
+
         // 1.判断BackTop是否显示
-        this.isShowBackTop = (-position.y) > 1000
+        // this.isShowBackTop = (-position.y) > 1000
+        this.listenShowBackTop(position)
         // 2.决定tabControl是否吸顶
         /* 判断此时滑动的距离y是否大于图片上方所处于的高度 */
         this.isTabFixed = (-position.y) > this.tabOffsetTop
+
       },
       loadMore(){
         
@@ -174,6 +185,7 @@
         
         this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop
         console.log(this.tabOffsetTop)
+        
       },
       getHomeMultidata(){
         getHomeMultidata().then(res => {

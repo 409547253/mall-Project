@@ -1,17 +1,39 @@
 <template>
-  <transition name="fade">
+ <!--  <transition name="fade">
     <div class="toast" v-show="isShow">{{message}}</div>
-  </transition>
+  </transition> -->
+  <div class="toast" v-show="isShow">
+    
+      <div>{{message}}</div>
+
+  </div>
 </template>
 
 <script>
 	export default {
-		name: "Toast",
+    name: "Toast",
     data() {
 			return {
 				isShow: false,
         message: '我是弹窗'
+      } 
+    },
+    methods:{
+      
+      show(message,duration){
+
+        this.isShow = true
+        this.message = message
+
+        setTimeout(() => {
+
+          this.isShow = false
+          this.message = ''
+
+        },duration)
+
       }
+
     }
 	}
 </script>

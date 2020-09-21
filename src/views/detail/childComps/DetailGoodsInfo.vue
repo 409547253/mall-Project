@@ -29,15 +29,20 @@
     },
     methods: {
 	    imgLoad() {
+        /* 如果counter的长度等于图片的个数,则发送$emit */
+
         if (++this.counter === this.imagesLength) {
 	        this.$emit('imageLoad')
         }
+
 	    }
     },
     watch: {
+
 	    detailInfo() {
 	    	this.imagesLength = this.detailInfo.detailImage[0].list.length
-	    }
+      }
+      
     }
 	}
 </script>

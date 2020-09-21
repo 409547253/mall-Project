@@ -19,6 +19,7 @@
     height: 44px;
     line-height: 44px;
     text-align: center;
+    box-shadow: 0 10px 50px 1px #eeeeee;
   }
 
   .left {

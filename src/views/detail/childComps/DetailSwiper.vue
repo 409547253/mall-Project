@@ -1,10 +1,12 @@
 <template>
-  <swiper>
-    <swiper-item v-for="(item, index) in images"
-                 :key="index" class="swiper-item">
-      <img :src="item" alt="">
-    </swiper-item>
-  </swiper>
+
+    <swiper class="detail-swiper">
+      <swiper-item v-for="(item, index) in topImages"
+                  :key="index" class="swiper-item">
+        <img :src="item" alt="">
+      </swiper-item>
+    </swiper>
+  
 </template>
 
 <script>
@@ -17,13 +19,21 @@
       SwiperItem
     },
     props: {
-			images: Array
+      topImages:{
+        type:Array,
+        default(){
+
+        }
+      }
     }
 	}
 </script>
 
 <style scoped>
-  .swiper-item {
+  .detail-swiper {
     height: 300px;
+  }
+  .swiper-item img{
+    height: 100%;
   }
 </style>

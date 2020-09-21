@@ -1,19 +1,23 @@
 <template>
   <div id="shop-item">
+
     <div class="item-selector">
-      <CheckButton @checkBtnClick="checkedChange" v-model="itemInfo.checked"></CheckButton>
+      <CheckButton :is-checked="itemInfo.checked" @click.native="checkClick"/>
     </div>
+
     <div class="item-img">
-      <img :src="itemInfo.imgURL" alt="商品图片">
+      <img :src="itemInfo.image" alt="商品图片">
     </div>
+    
     <div class="item-info">
       <div class="item-title">{{itemInfo.title}}</div>
       <div class="item-desc">{{itemInfo.desc}}</div>
       <div class="info-bottom">
-        <div class="item-price left">¥{{itemInfo.price}}</div>
+        <div class="item-price left">{{itemInfo.price}}</div>
         <div class="item-count right">x{{itemInfo.count}}</div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -21,6 +25,7 @@
   import CheckButton from './CheckButton'
 
   export default {
+
     name: "ShopCartItem",
     props: {
       itemInfo: Object
@@ -29,10 +34,15 @@
       CheckButton
     },
     methods: {
-      checkedChange: function () {
+      /* checkedChange: function () {
         this.itemInfo.checked = !this.itemInfo.checked;
+      }, */
+      checkClick(){
+        this.itemInfo.checked = !this.itemInfo.checked
       }
+
     }
+
   }
 </script>
 

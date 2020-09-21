@@ -1,7 +1,7 @@
 <template>
   <div class="goods-item" @click="itemClick">
     <!-- <img @load="imgLoad" v-lazy="showImage" :key="showImage" alt=""> -->
-    <img :src="goodsItem.showLarge.img" alt="" @load="imgLoad">
+    <img v-lazy="showImage" alt="" @load="imgLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
@@ -9,10 +9,10 @@
     </div>
   </div>
 </template>
-
+ 
 <script>
   export default {
-    name: "GoodsListItem",
+    name: "GoodsListItem", 
     props: {
       goodsItem: {
         type: Object,
@@ -31,11 +31,28 @@
         // 1.获取iid
         const iid = this.goodsItem.iid;
         // 2.跳转到详情页面
-        this.$router.push({path: '/detail', query: {iid}})
+        this.$router.push('/detail/' + this.goodsItem.iid)
+        this.$bus.$emit('backFresh')
+        
       },
 	    imgLoad() {
-        this.$bus.$emit('itemImageLoad')
-	    }
+        
+        /* 当图片加载完毕后，发送事件 */
+        this.$bus.$emit('itemImgLoad')
+
+        /* 如果这个路由是来自home页才会进行事件总线上的传递 */
+       /*  if(this.$route.path.indexOf('/home')){
+
+          this.$bus.$emit('itemImgLoad')
+
+        }else if(this.$route.path.indexOf('/detail')){
+          
+          this.$bus.$emit('detailItemImgLoad')
+
+        } */
+
+      }
+      
     }
   }
 </script>
